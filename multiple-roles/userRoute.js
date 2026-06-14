@@ -6,6 +6,6 @@ const app = express.Router();
 
 app.post("/register",registerUser);
 app.post("/login",LoginUser);
-app.get("/get-alluser",isLoggedIn, authorize("seller", "admin"),getAllUser);
-app.patch("/users/:id/role",isLoggedIn,authorize('admin'),updateRole)
+app.get("/get-alluser",isLoggedIn, authorize("admin"),getAllUser);
+app.patch("/users/role/:id",isLoggedIn,authorize('admin'),updateRole)
 export default app;

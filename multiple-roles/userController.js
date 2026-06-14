@@ -38,6 +38,13 @@ export const updateRole = async(req,res) => {
     try {
         const {id} = req.params;
         const {role} = req.body;
+        const adminUser = req.user;
+        const admin = await userModel.findById(adminUser.id);
+        console.log(admin)
+        if(id === adminUser.id )return res.status(401).send({message:"Admin can not chnage its role"})
+        if(!admin.roles.includes(role)){
+            return res.status(401).send({message:"Invalid Role",success:false})
+        }
         const user = await userModel.findByIdAndUpdate(id,{role},{new:true});
         res.status(200).send({message:"Role Applied Successfully!",success:true,data:user})
     } catch (error) {

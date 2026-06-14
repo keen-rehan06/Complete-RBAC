@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema({
         type:String,
         enum:["user","admin","seller","driver","delivery-boy"],
         default:"user"
+    },
+    roles:{
+        type:Array,
+        default:[]
     }
 })
 
