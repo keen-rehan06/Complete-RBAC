@@ -6,9 +6,13 @@ const userSchema = new mongoose.Schema({
     password:String,
     role:{
         type:String,
-        enum:["admin","user","seller","driver"],
-        default:"user"
+        enum:["ADMIN","USER","SELLER","SUB_ADMIN","SUPER_ADMIN"],
+        default:"USER"
     },
+    permission:{
+        type:String,
+        default: "VIEW_POST"
+    }
 },{timestamps:true});
 
 export const userModel = new mongoose.model("user",userSchema);
