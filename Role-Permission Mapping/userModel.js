@@ -10,8 +10,8 @@ const userSchema = new mongoose.Schema({
         default:"USER"
     },
     permission:{
-        type:String,
-        default: "VIEW_POST"
+        type:Array,
+        default: ["VIEW_POST"]
     }
 },{timestamps:true});
 

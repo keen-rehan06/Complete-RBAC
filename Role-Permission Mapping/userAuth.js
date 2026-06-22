@@ -32,7 +32,7 @@ export const loginUser = async (req, res) => {
     }
 }
 
-export const assignRole = async((req, res) => {
+export const assignRole = async(req, res) => {
     try {
         const { id } = req.params;
         const { role } = req.body;
@@ -40,53 +40,63 @@ export const assignRole = async((req, res) => {
         const allowedRoles = ROLE_HIERARCHY[admin.role] || [];
         const user = await userModel.findById(id);
         if (!user) return res.status(404).send({ message: "User not found", success: false });
-        if (admin.role === "ADMIN" && user.role === "ADMIN" || user.role === "SUPER_ADMIN") {
+
+        if(user._id === admin.id) {
+            return res.status(403).send({
+                success: false,
+                message: "You cannot change your own role."
+            });
+        }
+
+        if (admin.role === "ADMIN" && (user.role === "ADMIN" || user.role === "SUPER_ADMIN")) {
             return res.status(403).send({
                 success: false,
                 message: "You cannot modify this user."
             });
-            if (
-                admin.role === "SUB_ADMIN" &&
-                (
-                    user.role === "SUB_ADMIN" ||
-                    user.role === "ADMIN" ||
-                    user.role === "SUPER_ADMIN"
-                )
-            ) {
-                return res.status(403).send({
-                    success: false,
-                    message: "You cannot modify this user."
-                });
-            }
-            if (!allowedRoles.includes(role)) {
-                return res.status(401).send({
-                    message: "You can not assign this role.",
-                    success: false
-                })
-            }
-
-            let rolePermissions;
-            if (role === "ADMIN") {
-                rolePermissions = permission.ADMIN;
-            }
-            else if (role === "SUB_ADMIN") {
-                rolePermissions = permission.SUB_ADMIN
-            }
-            else if (role === "SELLER") {
-                rolePermissions = permission.SELLER;
-            }
-            user.role = role;
-            user.permission = rolePermissions;
-            await user.save();
-            res
-                .status(200)
-                .send({
-                    message: "Role Applied Successfully!",
-                    success: true,
-                    data: user,
-                });
         }
+
+        if (
+            admin.role === "SUB_ADMIN" &&
+            (
+                user.role === "SUB_ADMIN" ||
+                user.role === "ADMIN" ||
+                user.role === "SUPER_ADMIN"
+            )
+        ) {
+            return res.status(403).send({
+                success: false,
+                message: "You cannot modify this user."
+            });
+        }
+        if (!allowedRoles.includes(role)) {
+            return res.status(401).send({
+                message: "You can not assign this role.",
+                success: false
+            })
+        }
+
+        let rolePermissions;
+        if (role === "ADMIN") {
+            rolePermissions = permission.ADMIN;
+        }
+        else if (role === "SUB_ADMIN") {
+            rolePermissions = permission.SUB_ADMIN
+        }
+        else if (role === "SELLER") {
+            rolePermissions = permission.SELLER;
+        }
+        user.role = role;
+        user.permission = rolePermissions;
+        await user.save();
+        res
+            .status(200)
+            .send({
+                message: "Role Applied Successfully!",
+                success: true,
+                data: user,
+            });
+
     } catch (error) {
         return res.status(401).send({ message: error.message, success: false });
     }
-})
+}
