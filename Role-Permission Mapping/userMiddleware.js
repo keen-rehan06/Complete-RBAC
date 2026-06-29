@@ -46,7 +46,7 @@ export const checkPermission = (permission) => {
 
     if (!rolePermission.includes(permission)) {
       return res.status(403).send("Access Denied ❌");
-    }
+    } 
 
     next();
   };
