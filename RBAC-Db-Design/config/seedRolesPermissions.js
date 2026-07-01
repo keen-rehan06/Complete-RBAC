@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 import { configDotenv } from "dotenv";
 configDotenv({ ptah: "./.env" });
 
-import Permission from "../models/permission.model.js";
-import Role from "../models/role.model.js";
+import {permissionModel} from "../models/permissionModel.js";
+import {roleModel} from "../models/roleModel.js";
 
 const permissions = [
   "CREATE_USER",
@@ -17,15 +17,15 @@ const permissions = [
 ];
 
 
-const seedRolesPermissions = async (req,res) => {
+export const seedRolesPermissions = async (req,res) => {
 try {
   
 // Delete old data (optional)
-await Permission.deleteMany({});
-await Role.deleteMany({});
+await permissionModel.deleteMany({});
+await roleModel.deleteMany({});
 
 // Create Permission
-const createdPermission = await Permission.insertMany(
+const createdPermission = await permissionModel.insertMany(
   permissions.map((permission) => ({ name: permission })),
 );
 
@@ -36,7 +36,7 @@ const getPermissionIds = (permissionName) => {
     .map((permission) => permission._id);
 };
 
-await Role.insertMany([
+await roleModel.insertMany([
   {
     name: "ADMIN",
     permissions: getPermissionIds(permissions),

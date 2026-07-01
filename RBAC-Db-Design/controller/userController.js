@@ -13,7 +13,7 @@ export const userRegister = async (req, res) => {
       });
     }
 
-    const userExists = await User.findOne({ email });
+    const userExists = await userModel.findOne({ email });
 
     if (userExists) {
       return res.status(400).json({
@@ -24,17 +24,18 @@ export const userRegister = async (req, res) => {
     const employee = await roleModel.findOne({
       name: "EMPLOYEE",
     });
-    if (!employeeRole) {
+    console.log(employee.name)
+    if (!employee) {
       return res.status(500).json({
         success: false,
         message: "Employee role not found",
       });
     }
-    const user = await user.create({
+    const user = await userModel.create({
       name,
       email,
       password,
-      role: role._id,
+      role: employee._id,
     });
     const token = generateToken(user);
     res.status(201).json({

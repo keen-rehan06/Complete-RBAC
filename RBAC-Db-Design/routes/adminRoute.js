@@ -7,9 +7,9 @@ import {
   viewProduct,
 } from "../controller/adminController.js";
 
-export const app = express.Router();
+ const app = express.Router();
 
-app.post(
+app.get(
   "/create-product",
   authMiddleware,
   permissionsMiddleware("CREATE_PRODUCT"),
@@ -29,3 +29,5 @@ app.get(
   permissionsMiddleware("VIEW_PRODUCT"),
   viewProduct,
 );
+
+export default app;
